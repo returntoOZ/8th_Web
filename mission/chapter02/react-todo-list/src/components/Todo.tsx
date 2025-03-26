@@ -1,5 +1,7 @@
 import { FormEvent, useState } from "react"
 import { TTodo } from "../types/todo";
+import Form from "./Form";
+import Section from "./Section";
 
 const Todo = () => {
     const [todos, setTodos] = useState<TTodo[]>([]);
@@ -29,41 +31,26 @@ const Todo = () => {
     return (
         <div className='todo-container'>
             <h1 className='todo-container__header'>HWAN TODO</h1>
-            <form onSubmit={handleSubmit} className='todo-container__form'>
-                <input value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    type='text'
-                    className='todo-container__input'
-                    placeholder='할 일 입력'
-                    required />
-                <button type='submit' className='todo-container__button'>
-                    할 일 추가
-                </button>
-            </form>
+            <Form 
+                onSubmit={handleSubmit}
+                input={input}
+                onChange={(e) => setInput(e.target.value)}
+                text= '할 일 추가' />
             <div className='render-container'>
-                <div className='render-container__section'>
-                    <h2 className='render-container__title'>할 일</h2>
-                    <ul id='todo-list' className='render-container__list'>
-                        {/* Map 사용 시, Key prop을 전달해야함, 리액트가 Key를 기준으로 rendering이 이뤄지기 때문이다! */}
-                        {todos.map((todo) => (
-                            <li key={todo.id} className='render-container__item'>
-                                <span className='render-container__item-text'>{todo.text}</span>
-                                <button onClick={() => completeTodo(todo)} style={{ backgroundColor: '#28a745' }} className='render-container__item-button'>완료</button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className='render-container__section'>
-                    <h2 className='render-container__title'>완료</h2>
-                    <ul id='todo-list' className='render-container__list'>
-                        {doneTodos.map((doneTodo) => (
-                            <li key={doneTodo.id} className='render-container__item'>
-                                <span className='render-container__item-text'>{doneTodo.text}</span>
-                                <button onClick={() => deleteTodo(doneTodo)} style={{ backgroundColor: '#dc3545' }} className='render-container__item-button'>완료</button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                <Section 
+                    title="할 일"
+                    todos={todos}
+                    onClick={completeTodo}
+                    backgroundColor="#28a745"
+                    button_name="완료"
+                />
+                <Section 
+                    title="완료"
+                    todos={doneTodos}
+                    onClick={deleteTodo}
+                    backgroundColor="#dc3545"
+                    button_name="삭제"
+                />
             </div>
         </div>
     )

@@ -1,23 +1,23 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent } from "react";
 
 interface FormProps {
-    onSubmit?: () => void;
-    onClick?: () => void;
+    onSubmit?: (e: FormEvent<HTMLFormElement>) => void;
+    input: string;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     text: string;
 }
 
-const Form = ({onSubmit, onClick, text}: FormProps) => {
-    const[input, setInput] = useState('');
+const Form = ({onSubmit, input, onChange, text}: FormProps) => {
   return (
     <>
         <form onSubmit={onSubmit} className='todo-container__form'>
             <input value={input} 
-                onChange={(e) => setInput(e.target.value)}
+                onChange={onChange}
                 type='text'
                 className='todo-container__input'
                 placeholder='할 일 입력'
                 required />
-            <button type='submit' onClick={onClick} className='todo-container__button'>{text}</button>
+            <button type='submit' className='todo-container__button'>{text}</button>
         </form>
     </>
   )
