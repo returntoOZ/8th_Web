@@ -2,12 +2,18 @@ import { FormEvent, useState } from "react"
 import { TTodo } from "../types/todo";
 import Form from "./Form";
 import Section from "./Section";
+import { useDark } from "../context/darkProvider";
 
 const Todo = () => {
+    const {isDark, setIsDark} = useDark();
     const [todos, setTodos] = useState<TTodo[]>([]);
     const [doneTodos, setDoneTodos] = useState<TTodo[]>([]);
     const [input, setInput] = useState<string>('');
     
+    const changeDarkMode = () =>{
+        setIsDark(prev => (!prev));
+    }
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const text = input.trim();
@@ -29,8 +35,12 @@ const Todo = () => {
     }
 
     return (
-        <div className='todo-container'>
-            <h1 className='todo-container__header'>HWAN TODO</h1>
+        
+        <div className='todo-container' style={{backgroundColor: isDark? 'black' : 'white'}}>
+            <button onClick={changeDarkMode} className="todo-container__button" style={{backgroundColor: isDark? 'white' : '#3c3c3c', color: isDark? 'black' : 'white'}}>
+                {isDark ? "라이트 모드" : "다크 모드"}
+            </button>
+            <h1 className='todo-container__header' style={{color: isDark? 'white' : 'black'}}>HWAN TODO</h1>
             <Form 
                 onSubmit={handleSubmit}
                 input={input}

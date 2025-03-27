@@ -12,6 +12,7 @@ import Todo from './components/Todo';
 // complete box + del btn -> onClick하면 삭제 
 
 function App() {
+  
   return <>
     <Todo/>
   </>;

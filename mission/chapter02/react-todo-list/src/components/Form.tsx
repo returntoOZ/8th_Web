@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { useDark } from "../context/darkProvider";
 
 interface FormProps {
     onSubmit?: (e: FormEvent<HTMLFormElement>) => void;
@@ -8,15 +9,18 @@ interface FormProps {
 }
 
 const Form = ({onSubmit, input, onChange, text}: FormProps) => {
+  const { isDark } = useDark();
+
   return (
     <>
-        <form onSubmit={onSubmit} className='todo-container__form'>
+        <form onSubmit={onSubmit} className='todo-container__form' style={{backgroundColor: isDark? 'black' : 'white'}}>
             <input value={input} 
                 onChange={onChange}
                 type='text'
                 className='todo-container__input'
                 placeholder='할 일 입력'
-                required />
+                required 
+                style={{backgroundColor: isDark? '#3c3c3c' : 'white', color: isDark? 'white' : 'black'}}/>
             <button type='submit' className='todo-container__button'>{text}</button>
         </form>
     </>
