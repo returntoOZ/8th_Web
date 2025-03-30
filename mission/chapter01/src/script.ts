@@ -57,7 +57,7 @@ function moveToComplete(todoBox: HTMLDivElement, text: string) : void{
     todoBox.remove();
 }
 
-addTodoBtn?.addEventListener('click', addTodo);
+addTodoBtn.addEventListener('click', addTodo);
 
 // Typescript Document 요소 다루기
 // getElementById()로 HTML 태그를 불러올 때 리턴받는 DOM객체는 HTMLElement | null 타입임

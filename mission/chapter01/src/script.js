@@ -43,7 +43,7 @@ function moveToComplete(todoBox, text) {
     completeContainer.appendChild(completeBox);
     todoBox.remove();
 }
-addTodoBtn === null || addTodoBtn === void 0 ? void 0 : addTodoBtn.addEventListener('click', addTodo);
+addTodoBtn.addEventListener('click', addTodo);
 // Typescript Document 요소 다루기
 // getElementById()로 HTML 태그를 불러올 때 리턴받는 DOM객체는 HTMLElement | null 타입임
 // 즉, value 속성을 사용할 수 없음! -> as HTMLInputElement를 사용 + non null assertion
