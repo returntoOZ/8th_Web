@@ -1,7 +1,7 @@
-const inputElement = document.getElementById('todo-input') as HTMLInputElement; 
-const addTodoBtn = document.getElementById('todo-add-btn');
-const todoContainer = document.getElementById('todo-container');
-const completeContainer = document.getElementById('complete-container');
+const inputElement = document.getElementById('todo-input') as HTMLInputElement;
+const addTodoBtn = document.getElementById('todo-add-btn') as HTMLButtonElement;
+const todoContainer = document.getElementById('todo-container') as HTMLElement;
+const completeContainer = document.getElementById('complete-container') as HTMLElement;
 
 function addTodo(): void{
     if(!inputElement || !todoContainer) return;
