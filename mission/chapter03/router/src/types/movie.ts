@@ -21,3 +21,41 @@ export type MovieResponse = {
     total_pages: number;
     total_results: number;
 };
+
+export type Genre = {
+    id: number;
+    name: string;
+};
+
+export type MovieDetail = {
+    genres: Genre[];
+    id: number;
+    original_title: string;
+    overview: string;
+    poster_path: string;
+    release_date: string;
+    runtime: number;
+    tagline: string;
+    title: string;
+    vote_average: number;
+};
+
+export type Cast = {
+    id: number;
+    name: string;
+    character: string;
+    profile_path: string | null;
+};
+
+export type Crew = {
+    id: number;
+    name: string;
+    job: string;
+    profile_path: string | null;
+};
+
+export type MovieCredits = {
+    id: number;
+    cast: Cast[];
+    crew: Crew[];
+};
