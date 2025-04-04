@@ -16,6 +16,9 @@ const MovieDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
+      // 기존 여러 개의 api 호출을 하기 위해 axios.all 방식만 알고 있었음
+      // but axios.all의 경우 리턴되는 타입이 일치하지 않아 자꾸 오류가 발생했음!
+      // (일단은 오류를 어찌저찌 해결했지만 정확한 이유에 대해서는 잘모르겠다.....좀더 알아봐야겠다....!)
       try {
         const [detailResponse, creditsResponse] = await Promise.all([
           axios.get<MovieDetail>(
@@ -67,6 +70,7 @@ const MovieDetailPage = () => {
   }
 
   // movie와 credits가 null인 경우에도 안전하게 early return합니다.
+  // creadits 에 대한 예외처리가 없으면, 계속 오류로 표기됌
   if (!movie || !credits) return null;
 
 
