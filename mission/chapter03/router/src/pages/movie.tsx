@@ -44,7 +44,7 @@ const MoviesPage = () => {
     };
 
     fetchMovies();
-  }, [page]);
+  }, [params.type, page]);
 
   // 문제 상황 : useParams에 따른 영화 리스트 렌더링을 하기 위해 의존성 배열에 movies를 넣었음
   // 하지만 로딩스피너와 함께 영화 페이지를 구현하는 과정에서 영화 페이지와 로딩 스피너가 무한으로 반복되는 문제를 찾았음
@@ -64,10 +64,6 @@ const MoviesPage = () => {
   // 의존성 배열이 빈 배열이라면 첫 렌더링 시에만 작동!
   // async await 설명 : https://velog.io/@tosspayments/%EC%98%88%EC%A0%9C%EB%A1%9C-%EC%9D%B4%ED%95%B4%ED%95%98%EB%8A%94-awaitasync-%EB%AC%B8%EB%B2%95
 
-  if(isPending){
-    return <LoadingSpinner/>;
-  }
-
   if (isError) {
     return (
       <div>
@@ -81,22 +77,36 @@ const MoviesPage = () => {
     <>
       <div className='flex items-center justify-center gap-6 mt-5'>
         <button
-          className='bg-[#dda5e3] text-white px-6 py-3 rounded-lg shadow-md'
+          className='bg-purple-400 text-white px-6 py-3 rounded-lg shadow-md
+          hover:bg-gray-300 transition-all duration-200 disabled:bg-gray-300
+          cursor-pointer disabled:cursor-not-allowed'
           disabled={page === 1}
           onClick={() => setPage(prev => prev - 1)}>
           {`<`}
         </button>
         <span>{page} 페이지</span>
         <button
+          className='bg-purple-400 text-white px-6 py-3 rounded-lg shadow-md
+          hover:bg-gray-300 transition-all duration-200 disabled:bg-gray-300
+          cursor-pointer disabled:cursor-not-allowed'
           onClick={() => setPage(prev => prev + 1)}>
           {`>`}
         </button>
       </div>
-      <div className="p-10 grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {movies && movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
+
+      {isPending && (
+        <div className='flex items-center justify-center h-dvh'>
+          <LoadingSpinner />
+        </div>
+      )}
+
+      {!isPending &&
+        <div className="p-10 grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {movies && movies.map((movie) => (
+            <MovieCard key={movie.id} movie={movie} />
+          ))}
+        </div>
+      }
     </>
 
   )

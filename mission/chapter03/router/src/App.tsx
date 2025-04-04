@@ -19,8 +19,8 @@ const router = createBrowserRouter([
         element: <HomePage />
       },
       {
-        // /:을 활용해서, 동적으로 바뀌는 부분의 이름을 정의해줍시다.
-        path: 'movies',
+        // /:을 활용해서, 동적으로 바뀌는 부분의 이름 정의 가능
+        path: 'movies/:type',
         element: <MoviesPage />
       },
       {
@@ -32,7 +32,6 @@ const router = createBrowserRouter([
 ])
 
 function App() {
-  console.log(import.meta.env.VITE_TMDB_KEY);
   return <RouterProvider router={router} />
 }
 
