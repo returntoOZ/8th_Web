@@ -103,23 +103,30 @@ const MovieDetailPage = () => {
           <div>
             <h3 className="text-xl font-bold mb-2">출연진</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-4">
-              {allCast.map((castMember) => (
-                <div key={castMember.id} className="text-center">
-                  {castMember.profile_path ? (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w200${castMember.profile_path}`}
-                      alt={castMember.name}
-                      className="rounded-full w-20 h-20 mx-auto object-cover"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 bg-gray-300 rounded-full mx-auto flex items-center justify-center">
-                      No Image
-                    </div>
-                  )}
-                  <p className="text-sm font-medium">{castMember.name}</p>
-                  <p className="text-xs text-gray-500">{castMember.character}</p>
-                </div>
-              ))}
+              {allCast.map((castMember) => {
+                const { id = '',
+                  profile_path = '',
+                  name = '',
+                  character = ''
+                } = castMember;
+                return (
+                  <div key={id} className="text-center">
+                    {profile_path ? (
+                      <img
+                        src={`https://image.tmdb.org/t/p/w200${profile_path}`}
+                        alt={name}
+                        className="rounded-full w-20 h-20 mx-auto object-cover"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gray-300 rounded-full mx-auto flex items-center justify-center">
+                        No Image
+                      </div>
+                    )}
+                    <p className="text-sm font-medium">{name}</p>
+                    <p className="text-xs text-gray-500">{character}</p>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
