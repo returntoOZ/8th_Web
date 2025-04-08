@@ -5,55 +5,32 @@ import axios from "axios";
 import LoadingSpinner from "../component/LoadingSpinner";
 import { MovieDetail, MovieCredits } from "../types/movie";
 import MovieDetailCard from "../component/MovieDetailCard";
+import useAxios from "../custom-hook/useAxios";
 
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [movie, setMovie] = useState<MovieDetail>();
-  const [credits, setCredits] = useState<MovieCredits>();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [movie, setMovie] = useState<MovieDetail>();
+  // const [credits, setCredits] = useState<MovieCredits>();
+  // const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      // 기존 여러 개의 api 호출을 하기 위해 axios.all 방식만 알고 있었음
-      // but axios.all의 경우 리턴되는 타입이 일치하지 않아 자꾸 오류가 발생했음!
-      // (일단은 오류를 어찌저찌 해결했지만 정확한 이유에 대해서는 잘모르겠다.....좀더 알아봐야겠다....!)
-      try {
-        const [detailResponse, creditsResponse] = await Promise.all([
-          axios.get<MovieDetail>(
-            `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
-            {
-              headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_TMDB_KEY}`,
-              },
-            }
-          ),
-          axios.get<MovieCredits>(
-            `https://api.themoviedb.org/3/movie/${id}/credits?language=en-US`,
-            {
-              headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_TMDB_KEY}`,
-              },
-            }
-          ),
-        ]);
-        setMovie(detailResponse.data);
-        setCredits(creditsResponse.data);
-      } catch (error) {
-        console.error(error);
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchData();
+  const { response: detailResponse, loading: detailLoading, error: detailError } = useAxios({
+    method: "GET",
+    url: `/${id}?language=en-US`,
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_TMDB_KEY}`,
     }
   }, [id]);
 
-  if (isLoading) {
+  const { response: creditResponse, loading: creditLoading, error: creditError } = useAxios({
+    method: "GET",
+    url: `/${id}/credits?language=en-US`,
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_TMDB_KEY}`,
+    }
+  }, [id]);
+
+  if (detailLoading || creditLoading) {
     return (
       <div className="flex items-center justify-center h-dvh">
         <LoadingSpinner />
@@ -61,7 +38,7 @@ const MovieDetailPage = () => {
     );
   }
 
-  if (isError) {
+  if (detailError) {
     return (
       <div className="p-4 text-center text-red-500">
         영화 정보를 불러오는데 실패했습니다.
@@ -69,10 +46,18 @@ const MovieDetailPage = () => {
     );
   }
 
-  // movie와 credits가 null인 경우에도 안전하게 early return합니다.
-  // creadits 에 대한 예외처리가 없으면, 계속 오류로 표기됌
-  if (!movie || !credits) return null;
+  if (creditError) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        출연 정보를 불러오는데 실패했습니다.
+      </div>
+    );
+  }
 
+  const movie = detailResponse?.data;
+  const credits = creditResponse?.data;
+
+  if (!movie || !credits) return null;
 
   const director = credits.crew.find((member) => member.job === "Director");
   const allCast = credits.cast;
