@@ -1,18 +1,10 @@
-// src/pages/movie-detail.tsx
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import LoadingSpinner from "../component/LoadingSpinner";
-import { MovieDetail, MovieCredits } from "../types/movie";
 import MovieDetailCard from "../component/MovieDetailCard";
 import useAxios from "../custom-hook/useAxios";
 
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  // const [movie, setMovie] = useState<MovieDetail>();
-  // const [credits, setCredits] = useState<MovieCredits>();
-  // const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
 
   const { response: detailResponse, loading: detailLoading, error: detailError } = useAxios({
     method: "GET",
