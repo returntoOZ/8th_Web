@@ -1,7 +1,13 @@
 import useForm from "../hooks/useForm";
 import { UserSigninInformation, validateSignin } from "../utils/validate"
+import { postSignin } from "../apis/auth"
+import { LOCAL_STORAGE_KEY } from "../constants/key"
+import { useLocalStorage } from "../hooks/useLocalStorage"
+import { ResponseSigninDto } from "../types/auth"
 
 const LoginPage = () => {
+    const { setItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken)
+
     const { values, errors, touched, getInputProps } = useForm<UserSigninInformation>({
         initialValue: {
             email: "",
@@ -10,12 +16,21 @@ const LoginPage = () => {
         validate: validateSignin,
     })
 
-    const handleSubmit = () => { console.log(values) };
+    const handleSubmit = async () => {
+        console.log(values)
+        try {
+            const response: ResponseSigninDto = await postSignin(values)
+            setItem(response.data.accessToken)
+        } catch (error) {
+            alert(error?.message)
+        }
+        console.log(response)
+    }
 
     // 오류가 하나라도 있거나, 입력값이 비어있으면 버튼을 비활성화
-    const isDisabled : boolean = 
-    Object.values(errors || {}).some((error : string) => error.length > 0) || // 오류가 있으면 true
-    Object.values(values).some((value : string) => value === "") // 입력값이 비어있으면 True
+    const isDisabled: boolean =
+        Object.values(errors || {}).some((error: string) => error.length > 0) || // 오류가 있으면 true
+        Object.values(values).some((value: string) => value === "") // 입력값이 비어있으면 True
 
     return (
         <div className='flex flex-col items-center justify-center h-full gap-4'>
