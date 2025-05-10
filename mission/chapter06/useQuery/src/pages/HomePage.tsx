@@ -1,4 +1,3 @@
-// src/pages/HomePage.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -11,15 +10,18 @@ import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
 const HomePage = () => {
   const { accessToken } = useAuth();
   const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
+  const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
+
   const {
     data: lps,
     isFetching,
     hasNextPage,
     isPending,
     fetchNextPage,
-    isError
-  } = useGetInfiniteLpList(5, search, PAGINATION_ORDER.desc);
+    isError,
+  } = useGetInfiniteLpList(5, search, order);
 
   const { ref, inView } = useInView({ threshold: 0 });
 
@@ -43,12 +45,34 @@ const HomePage = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="mb-4 p-2 border rounded w-full"
-        placeholder="검색어를 입력하세요"
-      />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="p-2 border rounded w-full sm:w-1/3"
+          placeholder="검색어를 입력하세요"
+        />
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setOrder(PAGINATION_ORDER.desc)}
+            className={`px-4 py-2 border rounded ${order === PAGINATION_ORDER.desc
+              ? "bg-blue-500 text-white"
+              : "bg-white text-gray-700"
+              }`}
+          >
+            최신순
+          </button>
+          <button
+            onClick={() => setOrder(PAGINATION_ORDER.asc)}
+            className={`px-4 py-2 border rounded ${order === PAGINATION_ORDER.asc
+              ? "bg-blue-500 text-white"
+              : "bg-white text-gray-700"
+              }`}
+          >
+            오래된순
+          </button>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {isPending && <LpCardSkeletonList count={20} />}
@@ -60,7 +84,7 @@ const HomePage = () => {
             <div
               key={lp.id}
               className="cursor-pointer"
-              onClick={() => handleCardClick(lp.id)}
+              onClick={() => handleCardClick(lp.id.toString())}
             >
               <LpCard lp={lp} />
             </div>
