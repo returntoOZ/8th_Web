@@ -44,7 +44,6 @@ const Navbar = () => {
     <>
       <nav className="bg-white dark:bg-gray-900 shadow-md fixed w-full z-30">
         <div className="flex items-center justify-between p-4">
-          {/* 햄버거 버튼 */}
           <button
             onClick={() => setSidebarOpen(prev => !prev)}
             className="text-gray-700 dark:text-gray-300 hover:text-blue-500 mr-4"
