@@ -1,18 +1,15 @@
-import { useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getLpComments } from "../../apis/lp";
-import { CommentsCursorResponse } from "../../types/lp";
-import LpCommentSkeleton from "./LpCommentSkeleton";
+import { useState, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { FaUser } from "react-icons/fa";
+import { useGetInfiniteLpComments } from "../../hooks/queries/useGetInfiniteLpComments";
+import LpCommentSkeleton from "./LpCommentSkeleton";
 
 interface LpCommentsProps {
   lpId: number;
-  limit?: number; // 한 번에 불러올 댓글 개수
+  limit?: number;
 }
 
-const DEFAULT_LIMIT = 5;
-
-const LpComments = ({ lpId, limit = DEFAULT_LIMIT }: LpCommentsProps) => {
+const LpComments = ({ lpId, limit }: LpCommentsProps) => {
   const [order, setOrder] = useState<"desc" | "asc">("desc");
 
   const {
@@ -22,13 +19,17 @@ const LpComments = ({ lpId, limit = DEFAULT_LIMIT }: LpCommentsProps) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery<CommentsCursorResponse>({
-    queryKey: ["lpComments", lpId, order],
-    queryFn: ({ pageParam }) =>
-      getLpComments(lpId, pageParam, limit, order),
-    getNextPageParam: (last) => (last.hasNext ? last.nextCursor : undefined),
-    enabled: !!lpId,
-  });
+  } = useGetInfiniteLpComments(lpId, limit, order);
+
+  // 화면 하단 탐지용
+  const { ref, inView } = useInView({ threshold: 0 });
+
+  // inView 감지되면 다음 페이지 자동 로드
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const comments = data?.pages.flatMap((p) => p.data) ?? [];
 
@@ -41,7 +42,9 @@ const LpComments = ({ lpId, limit = DEFAULT_LIMIT }: LpCommentsProps) => {
           <button
             onClick={() => setOrder("desc")}
             className={`px-3 py-1 border rounded ${
-              order === "desc" ? "bg-blue-500 text-white" : "bg-white text-gray-700"
+              order === "desc"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700"
             }`}
           >
             최신순
@@ -49,13 +52,17 @@ const LpComments = ({ lpId, limit = DEFAULT_LIMIT }: LpCommentsProps) => {
           <button
             onClick={() => setOrder("asc")}
             className={`px-3 py-1 border rounded ${
-              order === "asc" ? "bg-blue-500 text-white" : "bg-white text-gray-700"
+              order === "asc"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700"
             }`}
           >
             오래된순
           </button>
         </div>
       </div>
+
+      {/* 초기 로딩 스켈레톤 */}
       {isLoading ? (
         <div className="space-y-4">
           {Array.from({ length: limit }).map((_, idx) => (
@@ -66,6 +73,7 @@ const LpComments = ({ lpId, limit = DEFAULT_LIMIT }: LpCommentsProps) => {
         <p>댓글을 불러오는 중 오류가 발생했습니다.</p>
       ) : comments.length > 0 ? (
         <>
+          {/* 댓글 리스트 */}
           <ul className="space-y-4">
             {comments.map((c) => (
               <li key={c.id} className="p-4 border rounded">
@@ -80,7 +88,9 @@ const LpComments = ({ lpId, limit = DEFAULT_LIMIT }: LpCommentsProps) => {
                     ) : (
                       <FaUser className="w-8 h-8 text-gray-400 mr-2" />
                     )}
-                    <span className="text-sm font-medium">{c.author.name}</span>
+                    <span className="text-sm font-medium">
+                      {c.author.name}
+                    </span>
                   </div>
                   <span className="text-sm text-gray-500">
                     {new Date(c.createdAt).toLocaleString("ko-KR")}
@@ -90,20 +100,16 @@ const LpComments = ({ lpId, limit = DEFAULT_LIMIT }: LpCommentsProps) => {
               </li>
             ))}
           </ul>
-          {hasNextPage && (
-            <div className="flex flex-col items-center mt-4 space-y-2">
-              {isFetchingNextPage ? (
-                Array.from({ length: limit }).map((_, idx) => (
-                  <LpCommentSkeleton key={`loading-${idx}`} />
-                ))
-              ) : (
-                <button
-                  onClick={() => fetchNextPage()}
-                  className="px-4 py-2 border rounded hover:bg-gray-100"
-                >
-                  더 보기
-                </button>
-              )}
+
+          {/* 무한 스크롤 센티널 */}
+          <div ref={ref} className="h-2"></div>
+
+          {/* 추가 로딩 스켈레톤 */}
+          {isFetchingNextPage && (
+            <div className="space-y-4 mt-4">
+              {Array.from({ length: limit }).map((_, idx) => (
+                <LpCommentSkeleton key={`loading-${idx}`} />
+              ))}
             </div>
           )}
         </>
