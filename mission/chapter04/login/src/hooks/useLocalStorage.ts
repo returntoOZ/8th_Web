@@ -25,5 +25,5 @@ const removeItem = () => {
     }
 }
 
-return { setItem, getItem, removeItem}
+return { setItem, getItem, removeItem }
 }
