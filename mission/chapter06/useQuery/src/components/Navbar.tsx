@@ -42,7 +42,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-6">
             {!accessToken ? (
               <>
-                <Link to="/login"  className="text-gray-700 dark:text-gray-300 hover:text-blue-500">
+                <Link to="/login" className="text-gray-700 dark:text-gray-300 hover:text-blue-500">
                   로그인
                 </Link>
                 <Link to="/signup" className="text-gray-700 dark:text-gray-300 hover:text-blue-500">

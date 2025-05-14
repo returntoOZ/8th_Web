@@ -95,9 +95,8 @@ export default function LpComments({ lpId, limit = 5 }: LpCommentsProps) {
         <button
           type="submit"
           disabled={isPosting}
-          className={`px-4 py-2 rounded text-white ${
-            isPosting ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-          }`}
+          className={`px-4 py-2 rounded text-white ${isPosting ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+            }`}
         >
           {isPosting ? "등록 중..." : "댓글 작성"}
         </button>
@@ -109,21 +108,19 @@ export default function LpComments({ lpId, limit = 5 }: LpCommentsProps) {
         <div className="space-x-2">
           <button
             onClick={() => setOrder("desc")}
-            className={`px-3 py-1 border rounded ${
-              order === "desc"
+            className={`px-3 py-1 border rounded ${order === "desc"
                 ? "bg-blue-500 text-white"
                 : "bg-white text-gray-700"
-            }`}
+              }`}
           >
             최신순
           </button>
           <button
             onClick={() => setOrder("asc")}
-            className={`px-3 py-1 border rounded ${
-              order === "asc"
+            className={`px-3 py-1 border rounded ${order === "asc"
                 ? "bg-blue-500 text-white"
                 : "bg-white text-gray-700"
-            }`}
+              }`}
           >
             오래된순
           </button>
@@ -200,11 +197,10 @@ export default function LpComments({ lpId, limit = 5 }: LpCommentsProps) {
                       <button
                         type="submit"
                         disabled={isEditing}
-                        className={`px-3 py-1 rounded text-white ${
-                          isEditing
+                        className={`px-3 py-1 rounded text-white ${isEditing
                             ? "bg-gray-400"
                             : "bg-green-500 hover:bg-green-600"
-                        }`}
+                          }`}
                       >
                         {isEditing ? "저장 중..." : "저장"}
                       </button>
