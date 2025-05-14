@@ -60,6 +60,33 @@ export const postLp = async (
   };
 };
 
+// export const editLp = async (
+//   lpId: number,
+//   body: RequestCreateLpDto
+// ): Promise<LpDetailDto> => {
+//   const response = await axiosInstance.patch<{ data: LpDetailDto }>(
+//     `/v1/lps/${lpId}`,
+//     body
+//   );
+//   return response.data.data;
+// };
+
+export const editLp = async (
+  lpId: number,
+  body: RequestCreateLpDto
+): Promise<Lp> => {
+  const unique = Array.from(new Set(body.tags ?? []));
+  const { data } = await axiosInstance.patch<{ data: Lp }>(
+    `/v1/lps/${lpId}`,
+    { ...body, tags: unique }
+  );
+  return {
+    ...data.data,
+    createdAt: new Date(data.data.createdAt),
+    updatedAt: new Date(data.data.updatedAt),
+  };
+};
+
 export const postLpComment = async (
   lpId: number,
   body: { content: string }
