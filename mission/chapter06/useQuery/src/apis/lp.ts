@@ -60,17 +60,6 @@ export const postLp = async (
   };
 };
 
-// export const editLp = async (
-//   lpId: number,
-//   body: RequestCreateLpDto
-// ): Promise<LpDetailDto> => {
-//   const response = await axiosInstance.patch<{ data: LpDetailDto }>(
-//     `/v1/lps/${lpId}`,
-//     body
-//   );
-//   return response.data.data;
-// };
-
 export const editLp = async (
   lpId: number,
   body: RequestCreateLpDto
@@ -85,6 +74,15 @@ export const editLp = async (
     createdAt: new Date(data.data.createdAt),
     updatedAt: new Date(data.data.updatedAt),
   };
+};
+
+export const deleteLp = async (
+  lpId: number
+): Promise<boolean> => {
+  const { data } = await axiosInstance.delete<{ data: boolean }>(
+    `/v1/lps/${lpId}`
+  );
+  return data.data;
 };
 
 export const postLpComment = async (
@@ -121,14 +119,18 @@ export const deleteLpComment = async (
   return res.data.data;
 };
 
-export const addLike = async (lpId: number): Promise<Likes> => {
+export const addLike = async (
+  lpId: number
+): Promise<Likes> => {
   const { data } = await axiosInstance.post<{ data: Likes }>(
     `/v1/lps/${lpId}/likes`
   );
   return data.data;
 };
 
-export const removeLike = async (lpId: number): Promise<Likes> => {
+export const removeLike = async (
+  lpId: number
+): Promise<Likes> => {
   const { data } = await axiosInstance.delete<{ data: Likes }>(
     `/v1/lps/${lpId}/likes`
   );

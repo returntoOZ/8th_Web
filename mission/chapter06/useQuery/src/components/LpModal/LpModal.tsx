@@ -8,7 +8,7 @@ interface LpModalProps {
 
 export default function LpModal({ onClose }: LpModalProps) {
     const fileRef = useRef<HTMLInputElement>(null);
-    const {mutate: PostLpMutate, isPending } = usePostLp();
+    const { mutate: postLp, isPending } = usePostLp();
 
     const [previewSrc, setPreviewSrc] = useState<string>(lpImg);
     const [title, setTitle] = useState("");
@@ -40,13 +40,19 @@ export default function LpModal({ onClose }: LpModalProps) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        PostLpMutate({
+        postLp({
             title,
             content,
             thumbnail: previewSrc,
             tags,
             published: true,
-        });
+        },
+            {
+                onSuccess: () => {
+                    onClose();
+                },
+            }
+        );
     };
 
     return (

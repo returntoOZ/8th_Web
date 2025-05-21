@@ -11,6 +11,7 @@ import { useRemoveLike } from "../hooks/mutations/useRemoveLike";
 import { useState, useRef, ChangeEvent } from "react";
 import Modal from "../components/Modal";
 import useEditLp from "../hooks/mutations/useEditLp";
+import { useDeleteLp } from "../hooks/mutations/useDeleteLp";
 
 const LpDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -58,6 +59,7 @@ const LpDetailPage = () => {
     const removeTag = (idx: number) => setTags(tags.filter((_, i) => i !== idx));
 
     const editLp = useEditLp(lpId);
+    const deleteLp = useDeleteLp(lpId);
 
     if (isLoading) return <div className="mt-20 text-center">Loading...</div>;
     if (isError || !lp) return <div className="mt-20 text-center">조회된 LP가 없습니다.</div>;
@@ -81,6 +83,12 @@ const LpDetailPage = () => {
             },
             { onSuccess: () => setEditOpen(false) }
         );
+    };
+
+    const handleDelete = () => {
+        if (window.confirm("정말 이 LP를 삭제하시겠습니까?")) {
+            deleteLp.mutate();
+        }
     };
 
     const isLiked = lp.likes.some((l) => l.userId === user.id);
@@ -125,7 +133,7 @@ const LpDetailPage = () => {
                     <button onClick={openEdit} className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
                         <FaEdit className="mr-2" /> 수정
                     </button>
-                    <button className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
+                    <button onClick={handleDelete} className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
                         <FaTrash className="mr-2" /> 삭제
                     </button>
                     <button
