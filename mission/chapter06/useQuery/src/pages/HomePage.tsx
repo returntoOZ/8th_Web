@@ -9,12 +9,15 @@ import LpCard from "../components/LpCard/LpCard";
 import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
 import Modal from "../components/Modal";
 import LpModal from "../components/LpModal/LpModal";
+import useDebounce from "../hooks/useDebounce";
 
 export default function HomePage() {
   const { accessToken } = useAuth();
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce<string>(search, 500);
+
   const [order, setOrder] = useState<PAGINATION_ORDER>(
     PAGINATION_ORDER.desc
   );
@@ -27,7 +30,7 @@ export default function HomePage() {
     isPending,
     fetchNextPage,
     isError,
-  } = useGetInfiniteLpList(5, search, order);
+  } = useGetInfiniteLpList(5, debouncedSearch, order);
 
   const { ref, inView } = useInView({ threshold: 0 });
 
