@@ -1,18 +1,24 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "../hooks/useCustomRedux";
 import { calculateTotals, clearCart } from "../slices/cartSlice";
+import { useCartActions, useCartInfo } from "../hooks/useCartStore";
 
 const PriceBox = () => {
-    const { cartItems, total } = useSelector((state) => state.cart);
-    const dispatch = useDispatch();
+    const { cartItems, total } = useCartInfo();
+    const { calculateTotals, clearCart } = useCartActions();
+
+    // const { cartItems, total } = useSelector((state) => state.cart);
+    // const dispatch = useDispatch();
 
     const handleInitializeCart = () => {
-        dispatch(clearCart());
+        // dispatch(clearCart());
+        clearCart();
     };
 
     useEffect(() => {
-        dispatch(calculateTotals());
-    }, [dispatch, cartItems]);
+        // dispatch(calculateTotals());
+        calculateTotals();
+    }, [cartItems, calculateTotals]);
 
     return (
         <div className="p-12 flex justify-between">
